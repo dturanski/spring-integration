@@ -1,0 +1,2 @@
+http\://www.springframework.org/schema/integration/module/spring-integration-module-3.0.xsd=org/springframework/integration/module/config/spring-integration-module-3.0.xsd
+http\://www.springframework.org/schema/integration/module/spring-integration-module.xsd=org/springframework/integration/module/config/spring-integration-module-3.0.xsd

@@ -385,6 +385,17 @@ project('spring-integration-mail') {
 	[compileJava,compileTestJava]*.options*.compilerArgs = ["${xLintArg},-path"]
 }
 
+project('spring-integration-module') {
+	description = 'Spring Integration Module Support'
+	dependencies {
+		compile project(":spring-integration-core")
+		compile project(":spring-integration-amqp",optional)
+		compile project(":spring-integration-redis",optional)
+		compile "org.springframework:spring-context-support:$springVersion"
+		testCompile project(":spring-integration-test")
+	}
+}
+
 project('spring-integration-mongodb') {
 	description = 'Spring Integration MongoDB Support'
 	dependencies {

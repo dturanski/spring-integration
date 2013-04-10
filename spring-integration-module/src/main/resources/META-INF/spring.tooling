@@ -1,0 +1,4 @@
+# Tooling related information for the integration module namespace
+http\://www.springframework.org/schema/integration/module@name=integration module Namespace
+http\://www.springframework.org/schema/integration/module@prefix=int-mod
+http\://www.springframework.org/schema/integration/module@icon=org/springframework/integration/module/config/spring-integration-module.gif
