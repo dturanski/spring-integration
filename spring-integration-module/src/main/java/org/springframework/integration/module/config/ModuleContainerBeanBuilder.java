@@ -16,7 +16,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.integration.module.registry.SimpleChannelRegistry;
+import org.springframework.integration.module.registry.LocalChannelRegistry;
 
 /**
  * @author David Turanski
@@ -30,7 +30,7 @@ public class ModuleContainerBeanBuilder implements BeanBuilder<ModuleContainerCo
 	@Override
 	public BeanDefinition build(ModuleContainerConfiguration configuration, BeanDefinitionRegistry registry) {
 		if (configuration.getChannelRegistryReference() == null) {
-			BeanDefinitionBuilder channelRegistryBuilder = BeanDefinitionBuilder.rootBeanDefinition(SimpleChannelRegistry.class);
+			BeanDefinitionBuilder channelRegistryBuilder = BeanDefinitionBuilder.rootBeanDefinition(LocalChannelRegistry.class);
 			BeanDefinition beanDefinition = channelRegistryBuilder.getBeanDefinition();
 			registry.registerBeanDefinition(BeanDefinitionReaderUtils.generateBeanName(beanDefinition, registry), beanDefinition);
 		}

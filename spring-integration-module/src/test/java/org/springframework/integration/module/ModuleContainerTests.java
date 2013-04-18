@@ -12,10 +12,18 @@
  */
 package org.springframework.integration.module;
 
-import static org.junit.Assert.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
-import org.springframework.integration.module.registry.SimpleChannelRegistry;
+import static org.junit.Assert.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.integration.Message;
+import org.springframework.integration.MessageChannel;
+import org.springframework.integration.MessagingException;
+import org.springframework.integration.core.MessageHandler;
+import org.springframework.integration.core.SubscribableChannel;
+import org.springframework.integration.message.GenericMessage;
 
 /**
  * @author David Turanski
@@ -23,11 +31,47 @@ import org.springframework.integration.module.registry.SimpleChannelRegistry;
  */
 public class ModuleContainerTests {
 	@Test
-	public void test() {
+	public void test() throws Exception {
+		ApplicationContext ctx = new GenericApplicationContext();
+		
 		ModuleContainer moduleContainer = new ModuleContainer();
+		moduleContainer.setApplicationContext(ctx);
+		moduleContainer.afterPropertiesSet();
 		moduleContainer.resolveModules();
-		SimpleChannelRegistry registry = (SimpleChannelRegistry) moduleContainer.getChannelRegistry();
-		assertNotNull(registry.getInput("flow1.input"));
-		assertNotNull(registry.getOutput("flow1.output"));
+		
+		MessageChannel input1 = ctx.getBean("flow1.input",MessageChannel.class);
+		SubscribableChannel output1 = ctx.getBean("flow1.output",SubscribableChannel.class);
+		
+		MessageChannel input2 = ctx.getBean("flow2.input",MessageChannel.class);
+		SubscribableChannel output2 = ctx.getBean("flow2.output",SubscribableChannel.class);
+		
+		final AtomicBoolean messageReceived = new AtomicBoolean();
+		
+		output1.subscribe(new MessageHandler() {
+			
+			@Override
+			public void handleMessage(Message<?> message) throws MessagingException {
+				messageReceived.set(true);
+				assertEquals("hello",message.getPayload());
+			}
+		});
+		
+		messageReceived.set(false);
+		input1.send(new GenericMessage<String>("hello"));
+		
+		
+		output2.subscribe(new MessageHandler() {
+			
+			@Override
+			public void handleMessage(Message<?> message) throws MessagingException {
+				messageReceived.set(true);
+				assertEquals("HELLO",message.getPayload());
+			}
+		});
+		
+		messageReceived.set(false);
+		input2.send(new GenericMessage<String>("hello"));
+		
+		assertTrue(messageReceived.get());
 	}
 }

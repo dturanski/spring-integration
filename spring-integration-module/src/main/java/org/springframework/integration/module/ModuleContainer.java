@@ -31,7 +31,10 @@ import org.springframework.integration.MessageChannel;
 import org.springframework.integration.module.config.ChannelExporter;
 import org.springframework.integration.module.config.DefaultChannelExporter;
 import org.springframework.integration.module.registry.ChannelRegistry;
-import org.springframework.integration.module.registry.SimpleChannelRegistry;
+import org.springframework.integration.module.registry.LocalChannelRegistry;
+import org.springframework.util.Assert;
+
+import com.apple.eawt.ApplicationAdapter;
 
 /**
  * @author David Turanski
@@ -42,7 +45,7 @@ public class ModuleContainer implements InitializingBean, ApplicationContextAwar
 	private static final String DEFAULT_ROOT_MODULE_PATH = "/META-INF/spring/integration/modules";
 	private String modulePath = DEFAULT_ROOT_MODULE_PATH;
 
-	private ChannelRegistry channelRegistry = new SimpleChannelRegistry();
+	private ChannelRegistry channelRegistry = new LocalChannelRegistry();
 	private ApplicationContext applicationContext;
 	private ChannelExporter channelExporter = new DefaultChannelExporter();
 
@@ -109,7 +112,12 @@ public class ModuleContainer implements InitializingBean, ApplicationContextAwar
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
+		Assert.notNull(applicationContext, "applicationContext cannot be null");
+		Assert.notNull(channelRegistry,"channelRegistry cannot be null");
+		Assert.notNull(channelExporter,"channelExporter cannot be null");
+		if (ApplicationContextAware.class.isAssignableFrom(channelRegistry.getClass())) {
+			((ApplicationContextAware) channelRegistry).setApplicationContext(applicationContext);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -6,6 +6,6 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<int:channel id="input"/>
-	<int:bridge input-channel="input" output-channel="output"/>
+	<int:transformer input-channel="input" output-channel="output" expression="payload.toUpperCase()"/>
 	<int:channel id="output"/>
 </beans>
